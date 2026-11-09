@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>How Cryptocurrency Is Created: Live Demo</title>
+<style>
+:root{--bg:#f3f6f6;--card:#fff;--ink:#12262b;--mute:#586b70;--line:#d9e2e2;--acc:#0f8b8d;--gold:#c98a00;--ok:#16825d;--scene:#eaf1f1;--nav:#12262b;--navink:#f3f6f6;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b1a1e;--card:#12292f;--ink:#eaf2f2;--mute:#a6b9bc;--line:#264249;--acc:#3cc3c5;--gold:#f2b632;--ok:#3ecf9a;--scene:#0e2227;--nav:#06100f;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0b1a1e;--card:#12292f;--ink:#eaf2f2;--mute:#a6b9bc;--line:#264249;--acc:#3cc3c5;--gold:#f2b632;--ok:#3ecf9a;--scene:#0e2227;--nav:#06100f;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.5 Inter,system-ui,Arial,sans-serif}
+h1,h2{font-family:"Space Grotesk",Inter,Arial,sans-serif;line-height:1.15;margin:0}
+.wrap{max-width:1080px;margin:0 auto;padding:0 16px}
+header{background:var(--nav);color:var(--navink);padding:24px 0 20px}
+header h1{font-size:clamp(26px,5vw,40px)}header p{color:#b5c8ca;margin:6px 0 0}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.badge{color:#3cc3c5;font-weight:700;letter-spacing:.08em;font-size:13px}
+button{font:inherit;cursor:pointer;color:inherit}
+.tg{background:transparent;border:1px solid #4a6a70;color:var(--navink);border-radius:99px;padding:5px 14px;font-size:14px}
+.ctl{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0}
+.b{border:0;border-radius:12px;padding:12px 18px;font-weight:700;font-size:16px}
+.bs1{background:var(--acc);color:#fff}.bn{background:var(--card);border:1px solid var(--line)}
+.bar{height:8px;background:var(--line);border-radius:99px;overflow:hidden}.bar i{display:block;height:100%;width:0;background:var(--acc);transition:width .5s}
+.stage{background:var(--scene);border:1px solid var(--line);border-radius:18px;padding:6px;margin-top:10px}
+svg{display:block;width:100%;height:auto}svg text{font-family:Inter,Arial,sans-serif;fill:var(--ink)}
+.lbl{font-size:13px;font-weight:700;text-anchor:middle}.big{font-size:34px;text-anchor:middle}
+.mono{font-family:ui-monospace,Menlo,Consolas,monospace!important;font-size:15px;font-weight:700;text-anchor:middle}
+.cap{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px;margin-top:12px;min-height:128px}
+.cap small{color:var(--acc);font-weight:700;letter-spacing:.05em}.cap h2{font-size:24px;margin:2px 0 6px}
+.tip{color:var(--mute);font-size:15px;margin-top:6px}
+.pulse{animation:pu 1.2s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes pu{50%{transform:scale(1.12)}}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+@media(max-width:720px){.row{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px}
+.card h2{font-size:20px;margin-bottom:6px}.card ul{margin:0;padding-left:20px}
+footer{padding:24px 0 44px;color:var(--mute);font-size:14px}
+.stamp{display:inline-block;color:#17233a;background:#fbf6e9;border:3px dashed #b7791f;outline:3px solid #fbf6e9;outline-offset:-9px;padding:16px 20px;border-radius:6px;transform:rotate(-1.5deg);font-size:14.5px;line-height:1.45;box-shadow:0 4px 14px rgba(0,0,0,.2);margin-bottom:16px}
+.stamp b{display:block;font-size:11px;letter-spacing:.18em;color:#8a5a00}.stamp strong{display:block;font-size:17px;margin:2px 0 6px}.stamp a{color:#17233a;text-decoration:none;display:block}
+</style></head><body>
+<header><div class="wrap">
+<div class="top"><span class="badge">LIVE EXPLAINER</span><button class="tg" id="theme">Toggle theme</button></div>
+<h1>⛏️ How new cryptocurrency coins are created</h1>
+<p>A calm, step-by-step look at Bitcoin-style “mining”.</p>
+</div></header>
+<div class="wrap">
+<div class="ctl">
+<button class="b bs1" id="bg">▶ Start mining</button>
+<button class="b bn" id="bp">⏸ Pause</button>
+<button class="b bn" id="bsp">Speed 1×</button>
+<button class="b bn" id="bm">🔊 Narration: On</button>
+<button class="b bn" id="br">↺ Reset</button>
+</div>
+<div class="bar"><i id="pg"></i></div>
+<div class="stage"><svg id="sv" viewBox="0 0 900 420" role="img" aria-label="Animated scene: transactions are collected into a block, a miner solves a puzzle, the network verifies it, and the block is added to the chain with a coin reward"></svg></div>
+<div class="cap"><small id="cn">READY</small><h2 id="ct">Press “Start mining” to begin</h2><div id="cb">You will see how payments become a block, how a miner competes to add it, and where brand-new coins come from.</div><div class="tip" id="tp"></div></div>
+<div class="row">
+<div class="card"><h2>🪙 Where new coins come from</h2><ul><li>Only the miner who solves the puzzle first is rewarded</li><li>The reward is brand-new coins plus the fees people paid</li><li>Bitcoin’s reward halves about every four years</li><li>The total supply is capped, so creation slows down</li></ul></div>
+<div class="card"><h2>🔍 Good to know</h2><ul><li>Guessing is the “work”: it takes real electricity</li><li>Checking an answer is instant, so anyone can verify</li><li>Changing an old block would mean redoing all the work after it</li><li>Some coins use staking instead of mining and need far less energy</li></ul></div>
+</div></div>
+<footer><div class="wrap"><div class="stamp"><b>PRESENTED BY</b><strong>Mahendran Varadharajan</strong>IT Manager<br>📍 Abu Dhabi, UAE<a href="tel:+971564753818">📞 +971 564753818</a><a href="mailto:mvitjob@gmail.com">✉️ mvitjob@gmail.com</a><a href="https://www.linkedin.com/in/mahendranvaradharajan" target="_blank" rel="noopener">🔗 LinkedIn: mahendranvaradharajan</a></div><br>Simplified teaching animation. Real mining uses specialised hardware and far larger numbers. This is not financial advice.</div></footer>
+<script>
+var $=function(i){return document.getElementById(i)};
+var gen=0,paused=false,speed=1,busy=false;
+var C='<text class="big" x="70" y="100">👛</text><text class="lbl" x="70" y="128">Alice</text>'+
+'<text class="big" x="70" y="230">👛</text><text class="lbl" x="70" y="258">Carol</text>'+
+'<text class="big" x="70" y="350">👛</text><text class="lbl" x="70" y="378">Dev</text>'+
+'<rect x="190" y="90" width="120" height="210" rx="14" fill="var(--card)" stroke="var(--line)" stroke-width="3" stroke-dasharray="6 5"/><text class="lbl" x="250" y="80">Waiting pool</text><text class="lbl" id="pc" x="250" y="318" style="fill:var(--mute)">0 payments</text>'+
+'<rect x="370" y="90" width="230" height="230" rx="16" fill="var(--card)" stroke="var(--line)" stroke-width="3"/><text class="lbl" x="485" y="80">Miner</text>'+
+'<text class="big" x="485" y="145">💻</text><text class="mono" id="hs" x="485" y="215" style="fill:var(--mute)">----------------</text>'+
+'<text class="lbl" id="nc" x="485" y="240" style="fill:var(--mute)">Nonce: -</text><text class="lbl" id="tg" x="485" y="268" style="fill:var(--acc)">Goal: hash starts with 0000</text>'+
+'<text class="lbl" id="st" x="485" y="300" style="fill:var(--mute)">Idle</text>'+
+'<text class="lbl" x="780" y="62">Network nodes</text>'+
+'<text class="big" x="710" y="115">🖥️</text><text class="big" id="n1" x="710" y="75" style="font-size:24px"></text>'+
+'<text class="big" x="780" y="115">🖥️</text><text class="big" id="n2" x="780" y="75" style="font-size:24px"></text>'+
+'<text class="big" x="850" y="115">🖥️</text><text class="big" id="n3" x="850" y="75" style="font-size:24px"></text>'+
+'<text class="big" x="780" y="230">👛</text><text class="lbl" x="780" y="258">Miner’s wallet</text><text class="lbl" id="bal" x="780" y="278" style="fill:var(--gold)">0 coins</text>'+
+'<line x1="650" y1="365" x2="860" y2="365" stroke="var(--line)" stroke-width="3"/><text class="lbl" x="400" y="360" style="text-anchor:end">Blockchain ⛓️</text>'+
+'<g id="ch"><rect x="420" y="340" width="70" height="50" rx="8" fill="var(--scene)" stroke="var(--acc)" stroke-width="3"/><text class="lbl" x="455" y="370">Block 1</text>'+
+'<rect x="520" y="340" width="70" height="50" rx="8" fill="var(--scene)" stroke="var(--acc)" stroke-width="3"/><text class="lbl" x="555" y="370">Block 2</text>'+
+'<rect x="620" y="340" width="70" height="50" rx="8" fill="var(--scene)" stroke="var(--acc)" stroke-width="3"/><text class="lbl" x="655" y="370">Block 3</text>'+
+'<text class="lbl" x="505" y="335" style="fill:var(--mute)">🔗</text><text class="lbl" x="605" y="335" style="fill:var(--mute)">🔗</text></g>'+
+'<g id="b4" style="display:none"><text class="lbl" x="705" y="335" style="fill:var(--mute)">🔗</text><rect x="720" y="340" width="70" height="50" rx="8" fill="var(--acc)" opacity=".85"/><text class="lbl" x="755" y="370" style="fill:#fff">Block 4</text></g>'+
+'<g id="t1" style="display:none"><text class="big" style="font-size:28px">💸</text></g><g id="t2" style="display:none"><text class="big" style="font-size:28px">💸</text></g><g id="t3" style="display:none"><text class="big" style="font-size:28px">💸</text></g>'+
+'<g id="blk" style="display:none"><text class="big" style="font-size:44px">🧱</text></g>'+
+'<g id="coin" style="display:none"><text class="big pulse" style="font-size:44px">🪙</text></g>';
+function draw(){$("sv").innerHTML=C;["t1","t2","t3"].forEach(function(i,k){pos($(i),70,100+k*130)});pos($("blk"),485,175);pos($("coin"),485,175)}
+var narr=true,sp=Promise.resolve(),syn=window.speechSynthesis;
+function say(txt){try{if(syn)syn.cancel()}catch(e){}if(!narr||!syn){sp=Promise.resolve();return}txt=txt.replace(/[\u{1F300}-\u{1FAFF}\u2600-\u27BF]/gu,"").replace(/Tip:/,"Tip.");sp=new Promise(function(res){try{var u=new SpeechSynthesisUtterance(txt);u.lang="en-US";u.rate=speed>1?1.3:0.95;u.onend=res;u.onerror=res;setTimeout(function(){syn.speak(u)},60);setTimeout(res,60000)}catch(e){res()}})}
+function wt(ms){return Promise.all([sl(ms),sp])}
+function cap(n,t,b,tip,pc){$("cn").textContent=n;$("ct").textContent=t;$("cb").textContent=b;$("tp").textContent=tip||"";$("pg").style.width=pc+"%";if(pc>0)say(t+". "+b+" "+(tip||""))}
+function sl(ms){var g=gen;return new Promise(function(res,rej){var t=0;(function f(){if(g!==gen)return rej(0);if(!paused)t+=40*speed;t>=ms?res():setTimeout(f,40)})()})}
+function pos(el,x,y){el.setAttribute("transform","translate("+x+" "+y+")");el._p={x:x,y:y}}
+function mv(el,x,y,ms){var g=gen,x0=el._p.x,y0=el._p.y;return new Promise(function(res,rej){var u=0,l=0;function f(t){if(g!==gen)return rej(0);var dt=l?t-l:0;l=t;if(!paused)u+=dt*speed/ms;var k=Math.min(u,1);pos(el,x0+(x-x0)*k,y0+(y-y0)*k);k<1?requestAnimationFrame(f):res()}requestAnimationFrame(f)})}
+function tx(id,t){$(id).textContent=t}
+function hex(n,z){var s="",h="0123456789abcdef";for(var i=0;i<n;i++)s+=i<z?"0":h[Math.floor(Math.random()*16)];return s}
+async function mine(){
+cap("STEP 1 OF 6 · PAYMENTS","People send money to each other","Alice, Carol and Dev each make a payment. Nothing is final yet: the payments are announced to the network.","Tip: there is no bank in the middle. The network keeps the record.",6);
+["t1","t2","t3"].forEach(function(i){$(i).style.display=""});await wt(1800);
+cap("STEP 2 OF 6 · THE WAITING POOL","Payments wait in a pool","Unconfirmed payments queue up. People can add a small fee to be picked sooner.","",22);
+await Promise.all([mv($("t1"),250,150,1200),mv($("t2"),250,195,1200),mv($("t3"),250,240,1200)]);tx("pc","3 payments");await wt(900);
+cap("STEP 3 OF 6 · BUILDING A BLOCK","The miner bundles payments into a block","The miner picks payments from the pool, checks that the senders have enough funds and packs them into a candidate block 🧱.","",38);
+await Promise.all([mv($("t1"),485,175,1100),mv($("t2"),485,175,1100),mv($("t3"),485,175,1100)]);
+["t1","t2","t3"].forEach(function(i){$(i).style.display="none"});$("blk").style.display="";tx("pc","0 payments");tx("st","Block ready");await wt(1400);
+cap("STEP 4 OF 6 · THE PUZZLE","Guess, hash, check, repeat","The miner adds a number called a nonce and runs the block through a hash function. The result looks random, and the miner needs one that starts with four zeros. The only way to find it is to keep guessing.","This guessing is the “work” in proof of work, and it uses electricity.",55);
+tx("st","Working…");$("st").style.fill="var(--gold)";
+for(var i=0;i<16;i++){var z=i<9?Math.floor(i/4):(i<15?2+(i%2):0);tx("nc","Nonce: "+Math.floor(10000+Math.random()*89999));tx("hs",hex(16,i<9?Math.floor(i/4):1));await sl(260)}
+tx("nc","Nonce: 48213");tx("hs","0000"+hex(12,0));$("hs").style.fill="var(--ok)";tx("st","Solved!");$("st").style.fill="var(--ok)";await wt(1400);
+cap("STEP 5 OF 6 · VERIFY","The network double-checks the answer","Finding the answer took millions of guesses, but checking it takes one calculation. Other computers verify it and agree the block is valid.","",75);
+for(var k=1;k<=3;k++){tx("n"+k,"✅");await sl(700)}await wt(0);
+cap("STEP 6 OF 6 · NEW COINS","The block joins the chain and the miner is paid","The block is linked to the previous one, so history is locked in. The miner receives newly created coins plus the fees. This is the only way new coins enter circulation.","Today’s Bitcoin reward is 3.125 coins per block.",92);
+$("blk").style.display="none";$("b4").style.display="";await wt(900);$("coin").style.display="";pos($("coin"),485,175);await mv($("coin"),780,215,1500);$("coin").style.display="none";tx("bal","+3.125 coins");
+cap("RESULT","One block added, new coins created","Then the cycle starts again with the next block. Press “Reset” to watch it once more.","",100);
+}
+async function go(){if(busy)return;busy=true;try{await mine()}catch(e){if(e!==0)throw e}busy=false}
+function reset(){gen++;busy=false;paused=false;try{if(syn)syn.cancel()}catch(e){}sp=Promise.resolve();$("bp").textContent="⏸ Pause";draw();cap("READY","Press “Start mining” to begin","You will see how payments become a block, how a miner competes to add it, and where brand-new coins come from.","",0)}
+$("bg").onclick=function(){reset();setTimeout(go,50)};
+$("bp").onclick=function(){paused=!paused;this.textContent=paused?"▶ Play":"⏸ Pause";try{if(syn){paused?syn.pause():syn.resume()}}catch(e){}};
+$("bm").onclick=function(){narr=!narr;this.textContent=narr?"🔊 Narration: On":"🔇 Narration: Off";if(!narr){try{if(syn)syn.cancel()}catch(e){}sp=Promise.resolve()}else if(busy){say($("ct").textContent+". "+$("cb").textContent)}};
+$("bsp").onclick=function(){speed=speed==1?2:1;this.textContent="Speed "+speed+"×"};
+$("br").onclick=reset;
+$("theme").onclick=function(){var r=document.documentElement,d=r.dataset.theme?r.dataset.theme=="dark":window.matchMedia("(prefers-color-scheme:dark)").matches;r.dataset.theme=d?"light":"dark"};
+draw();
+</script></body></html>
